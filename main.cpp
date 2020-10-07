@@ -2,6 +2,7 @@
 #include <csignal>
 #include <zconf.h>
 #include "SerialPort.h"
+#include "IAP.h"
 
 using namespace std;
 
@@ -19,27 +20,27 @@ int main() {
   signal(SIGBREAK, signal_handler);
 #endif
 
-  SerialPort s("/dev/ttyUSB0", B921600);
-  if (s.open() < 0) {
+  Socket *s = new SerialPort("/dev/ttyUSB0", B921600);
+  IAP::MessageParser parser{};
+
+  if (s->open()) {
     return -1;
   }
 
-  string keep_alive = "\xC3\x01\x11\x11\xC6";
-
   while (!quit) {
-    printf("write\n");
-    int n = s.write(keep_alive);
-    printf("n: %d\n", n);
+    s->write(IAP::CommandBuilder::keepAlive());
     sleep(1);
-    s.read(5000);
+    s->read(5000);
     unsigned char b = 0;
-    for (int i = 0; i < 5; i++) {
-      s.readByte(&b);
-      printf("0x%02X ", b);
+    while (s->getBufferSize() > 0) {
+      s->popByte(&b);
+      parser.addByte(b);
+      if (parser.is_valid()) {
+        parser.build()->record();
+      }
     }
-    printf("\n");
   }
-  s.close();
+  s->close();
 
   return 0;
 }

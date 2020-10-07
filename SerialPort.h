@@ -23,15 +23,17 @@ public:
       unsigned char parity = 0
   );
 
-  int open();
+  int open() override;
 
-  int close();
+  int close() override;
 
   int read(size_t max_len) override;
 
-  int readByte(unsigned char *b) override;
+  int popByte(unsigned char *b) override;
 
   int write(std::string s) override;
+
+  size_t getBufferSize() override;
 
 private:
   std::string path_;
@@ -44,7 +46,5 @@ private:
   std::deque<unsigned char> buffer_;
   std::shared_mutex lock_;
 
-  int pop_buffer(unsigned char *d);
-
-  int clear_buffer();
+  int clearBuffer();
 };

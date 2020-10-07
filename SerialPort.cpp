@@ -42,7 +42,7 @@ int SerialPort::open() {
   }
   cfmakeraw(&tty);
 
-  // data bits
+  // payload_ bits
   tty.c_cflag &= ~CSIZE; // char size
   if (data_bits_ == 8) tty.c_cflag |= CS8;
   else if (data_bits_ == 7) tty.c_cflag |= CS7;
@@ -136,7 +136,7 @@ int SerialPort::close() {
     fd_ = 0;
   }
 
-  clear_buffer();
+  clearBuffer();
   return 0;
 }
 
@@ -152,7 +152,7 @@ int SerialPort::read(size_t max_len) {
   return nread;
 }
 
-int SerialPort::readByte(unsigned char *b) {
+int SerialPort::popByte(unsigned char *b) {
   lock_guard lock(lock_);
   if (buffer_.empty()) return -1;
   *b = buffer_.front();
@@ -166,7 +166,11 @@ int SerialPort::write(std::string s) {
   return ::write(fd_, s.c_str(), s.size());
 }
 
-int SerialPort::clear_buffer() {
+size_t SerialPort::getBufferSize() {
+  return buffer_.size();
+}
+
+int SerialPort::clearBuffer() {
   lock_guard lock(lock_);
   buffer_.clear();
   return 0;

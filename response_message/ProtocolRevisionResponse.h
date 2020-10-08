@@ -1,12 +1,13 @@
 #pragma once
 
+#include <cstdint>
 #include "ResponseMessage.h"
 
 class ProtocolRevisionResponse : public ResponseMessage {
 public:
-  explicit ProtocolRevisionResponse(unsigned short version);
+  explicit ProtocolRevisionResponse(uint16_t version);
   void record() override;
 
 private:
-  unsigned short version_;
+  uint16_t version_;
 };

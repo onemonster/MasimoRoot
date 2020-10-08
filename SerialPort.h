@@ -18,9 +18,9 @@ public:
   SerialPort(
       const std::string &path,
       speed_t baud_rate,
-      unsigned char data_bits = 8,
-      unsigned char stop_bit = 1,
-      unsigned char parity = 0
+      uint8_t data_bits = 8,
+      uint8_t stop_bit = 1,
+      uint8_t parity = 0
   );
 
   int open() override;
@@ -29,7 +29,7 @@ public:
 
   int read(size_t max_len) override;
 
-  int popByte(unsigned char *b) override;
+  int popByte(uint8_t *b) override;
 
   int write(std::string s) override;
 
@@ -38,12 +38,12 @@ public:
 private:
   std::string path_;
   speed_t baud_rate_;
-  unsigned char data_bits_ = 8;
-  unsigned char stop_bit_ = 1;
-  unsigned char parity_ = 0;
+  uint8_t data_bits_ = 8;
+  uint8_t stop_bit_ = 1;
+  uint8_t parity_ = 0;
 
   int fd_;
-  std::deque<unsigned char> buffer_;
+  std::deque<uint8_t> buffer_;
   std::shared_mutex lock_;
 
   int clearBuffer();

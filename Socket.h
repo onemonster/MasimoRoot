@@ -6,7 +6,7 @@ class Socket {
 public:
   virtual int read(size_t max_len) = 0;
 
-  virtual int popByte(unsigned char *b) = 0;
+  virtual int popByte(uint8_t *b) = 0;
 
   virtual int write(std::string s) = 0;
 

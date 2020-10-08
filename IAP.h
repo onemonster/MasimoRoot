@@ -5,15 +5,15 @@
 #include "response_message/ResponseMessage.h"
 
 namespace IAP {
-  const unsigned char SOM = 0xC3; // Start of Message
-  const unsigned char EOM = 0xC6; // End of Message
-  const unsigned char LEN_MARK = 0xFF; // Length is expressed in two bytes
+  const uint8_t SOM = 0xC3; // Start of Message
+  const uint8_t EOM = 0xC6; // End of Message
+  const uint8_t LEN_MARK = 0xFF; // Length is expressed in two bytes
 
   class MessageParser {
   public:
     bool isValid();
 
-    void addByte(unsigned char b);
+    void addByte(uint8_t b);
 
     ResponseMessage *build();
 
@@ -39,28 +39,28 @@ namespace IAP {
       ChannelWaveformData = 0xE0
     };
 
-    std::vector<unsigned char> payload_;
+    std::vector<uint8_t> payload_;
     ParseState state_ = START_STATE;
     bool started_ = false;
     bool ended_ = false;
     bool marked_flag_ = false;
-    unsigned short length_ = 0;
-    unsigned short data_count_ = 0;
-    unsigned char check_sum_ = 0;
+    uint16_t length_ = 0;
+    uint16_t data_count_ = 0;
+    uint8_t check_sum_ = 0;
   };
 
   namespace CommandBuilder {
     std::string ack();
 
     std::string keepAlive(); // Must call every two seconds
-    std::string requestDataGroup(unsigned char group_id);
+    std::string requestDataGroup(uint8_t group_id);
 
-    std::string requestPeriodicDataGroupDelivery(unsigned char group_id);
+    std::string requestPeriodicDataGroupDelivery(uint8_t group_id);
 
     std::string cancelAllPeriodicDataGroupDelivery();
 
-    std::string cancelSpecificPeriodicGroupDelivery(unsigned char group_id);
+    std::string cancelSpecificPeriodicGroupDelivery(uint8_t group_id);
 
-    std::string channelWaveformRequest(unsigned int channel_id, unsigned short waveform_bitmask);
+    std::string channelWaveformRequest(uint32_t channel_id, uint16_t waveform_bitmask);
   }
 }

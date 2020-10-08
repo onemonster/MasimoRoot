@@ -7,7 +7,7 @@
 using namespace std;
 using namespace IAP;
 
-#define PACK16(a, b) ((unsigned short)(((unsigned short)(a) << 8U) | ((unsigned char)(b))))
+#define PACK16(a, b) ((uint16_t)(((uint16_t)(a) << 8U) | ((uint8_t)(b))))
 
 bool MessageParser::isValid() {
   // Check is SOM and EOM encountered
@@ -17,17 +17,17 @@ bool MessageParser::isValid() {
   if (length_ != payload_.size()) return false;
 
   // Checksum
-  auto lambda = [](int a, int b) { return a + b; };
-  auto data_check_sum = accumulate(payload_.begin(), payload_.end(), 0, lambda);
+  auto lambda = [](uint8_t a, uint8_t b) { return uint8_t(a + b); };
+  uint8_t data_check_sum = accumulate(payload_.begin(), payload_.end(), 0, lambda);
   if (check_sum_ != data_check_sum) return false;
 
   return true;
 }
 
-void MessageParser::addByte(unsigned char b) {
+void MessageParser::addByte(uint8_t b) {
   auto getCheckSum = [&]() {
-    unsigned int sum = 0;
-    for (unsigned char payload_byte : payload_)
+    uint32_t sum = 0;
+    for (uint8_t payload_byte : payload_)
       sum += payload_byte;
     return sum & 0xFFU;
   };

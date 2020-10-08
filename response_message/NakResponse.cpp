@@ -1,7 +1,7 @@
 #include "NakResponse.h"
 #include <cstdio>
 
-NakResponse::NakResponse(unsigned char nak_type) {
+NakResponse::NakResponse(uint8_t nak_type) {
   nak_type_ = nak_type;
 }
 

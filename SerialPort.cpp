@@ -10,9 +10,9 @@ using namespace std;
 SerialPort::SerialPort(
     const std::string &path,
     speed_t baud_rate,
-    unsigned char data_bits,
-    unsigned char stop_bit,
-    unsigned char parity
+    uint8_t data_bits,
+    uint8_t stop_bit,
+    uint8_t parity
 ) {
   path_ = path;
   baud_rate_ = baud_rate;
@@ -152,7 +152,7 @@ int SerialPort::read(size_t max_len) {
   return nread;
 }
 
-int SerialPort::popByte(unsigned char *b) {
+int SerialPort::popByte(uint8_t *b) {
   lock_guard lock(lock_);
   if (buffer_.empty()) return -1;
   *b = buffer_.front();

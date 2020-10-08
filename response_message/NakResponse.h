@@ -1,13 +1,14 @@
 #pragma once
 
+#include <cstdint>
 #include "ResponseMessage.h"
 
 class NakResponse : public ResponseMessage {
 public:
-  explicit NakResponse(unsigned char nak_type);
+  explicit NakResponse(uint8_t nak_type);
   void record() override;
 private:
-  unsigned char nak_type_;
+  uint8_t nak_type_;
   enum NakType {
     BAD_PACKET = 0x00,
     INVALID_COMMAND = 0x01,

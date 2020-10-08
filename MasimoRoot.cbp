@@ -99,6 +99,12 @@
 		<Unit filename="/home/parallels/CLionProjects/MasimoRoot/response_message/AckResponse.h">
 			<Option target="MasimoRoot"/>
 		</Unit>
+		<Unit filename="/home/parallels/CLionProjects/MasimoRoot/response_message/DataGroupResponse.cpp">
+			<Option target="MasimoRoot"/>
+		</Unit>
+		<Unit filename="/home/parallels/CLionProjects/MasimoRoot/response_message/DataGroupResponse.h">
+			<Option target="MasimoRoot"/>
+		</Unit>
 		<Unit filename="/home/parallels/CLionProjects/MasimoRoot/response_message/NakResponse.cpp">
 			<Option target="MasimoRoot"/>
 		</Unit>

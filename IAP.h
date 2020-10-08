@@ -11,7 +11,7 @@ namespace IAP {
 
   class MessageParser {
   public:
-    bool is_valid();
+    bool isValid();
 
     void addByte(unsigned char b);
 

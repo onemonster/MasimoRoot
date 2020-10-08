@@ -1,12 +1,15 @@
 #include "IAP.h"
 #include "response_message/AckResponse.h"
 #include "response_message/NakResponse.h"
+#include "response_message/ProtocolRevisionResponse.h"
 #include <numeric>
 
 using namespace std;
 using namespace IAP;
 
-bool MessageParser::is_valid() {
+#define PACK16(a, b) ((unsigned short)(((unsigned short)(a) << 8U) | ((unsigned char)(b))))
+
+bool MessageParser::isValid() {
   // Check is SOM and EOM encountered
   if (!started_ || !ended_) return false;
 
@@ -79,10 +82,11 @@ void MessageParser::addByte(unsigned char b) {
 }
 
 ResponseMessage *MessageParser::build() {
-  if (!is_valid()) return nullptr;
+  if (!isValid()) return nullptr;
   switch (payload_[0]) {
     case ACK: return new AckResponse();
     case NAK: return new NakResponse(payload_[1]);
+    case ProtocolRevision: return new ProtocolRevisionResponse(PACK16(payload_[1], payload_[2]));
     default:
       printf("TODO: Create response class");
   }

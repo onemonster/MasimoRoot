@@ -105,6 +105,12 @@
 		<Unit filename="/home/parallels/CLionProjects/MasimoRoot/response_message/NakResponse.h">
 			<Option target="MasimoRoot"/>
 		</Unit>
+		<Unit filename="/home/parallels/CLionProjects/MasimoRoot/response_message/ProtocolRevisionResponse.cpp">
+			<Option target="MasimoRoot"/>
+		</Unit>
+		<Unit filename="/home/parallels/CLionProjects/MasimoRoot/response_message/ProtocolRevisionResponse.h">
+			<Option target="MasimoRoot"/>
+		</Unit>
 		<Unit filename="/home/parallels/CLionProjects/MasimoRoot/response_message/ResponseMessage.cpp">
 			<Option target="MasimoRoot"/>
 		</Unit>

@@ -4,7 +4,7 @@
 
 class NakResponse : public ResponseMessage {
 public:
-  NakResponse(unsigned char nak_type);
+  explicit NakResponse(unsigned char nak_type);
   void record() override;
 private:
   unsigned char nak_type_;

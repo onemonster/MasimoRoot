@@ -35,7 +35,7 @@ int main() {
     while (s->getBufferSize() > 0) {
       s->popByte(&b);
       parser.addByte(b);
-      if (parser.is_valid()) {
+      if (parser.isValid()) {
         parser.build()->record();
       }
     }

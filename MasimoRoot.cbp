@@ -132,6 +132,12 @@
 		<Unit filename="/home/parallels/CLionProjects/MasimoRoot/response_message/ResponseMessage.h">
 			<Option target="MasimoRoot"/>
 		</Unit>
+		<Unit filename="/home/parallels/CLionProjects/MasimoRoot/response_message/UnknownResponse.cpp">
+			<Option target="MasimoRoot"/>
+		</Unit>
+		<Unit filename="/home/parallels/CLionProjects/MasimoRoot/response_message/UnknownResponse.h">
+			<Option target="MasimoRoot"/>
+		</Unit>
 		<Unit filename="/home/parallels/CLionProjects/MasimoRoot/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>

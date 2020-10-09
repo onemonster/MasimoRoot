@@ -67,11 +67,11 @@ namespace IAP {
 
     std::string requestDataGroup(DataGroup group_id);
 
-    std::string requestPeriodicDataGroupDelivery(uint8_t group_id);
+    std::string requestPeriodicDataGroupDelivery(DataGroup group_id);
 
     std::string cancelAllPeriodicDataGroupDelivery();
 
-    std::string cancelSpecificPeriodicGroupDelivery(uint8_t group_id);
+    std::string cancelSpecificPeriodicGroupDelivery(DataGroup group_id);
 
     std::string channelWaveformRequest(uint32_t channel_id, uint16_t waveform_bitmask);
   }

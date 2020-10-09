@@ -3,6 +3,7 @@
 #include "response_message/NakResponse.h"
 #include "response_message/ProtocolRevisionResponse.h"
 #include "response_message/DataGroupResponse.h"
+#include "response_message/UnknownResponse.h"
 #include <numeric>
 
 using namespace std;
@@ -99,8 +100,7 @@ ResponseMessage *MessageParser::build() {
       p = new DataGroupResponse(payload_);
       break;
     default:
-      printf("TODO: Create response class");
-      p = nullptr;
+      p = new UnknownResponse(payload_);
   }
   reset();
   return p;
@@ -129,6 +129,39 @@ string CommandBuilder::requestDataGroup(DataGroup group_id) {
   string command, payload;
   command += SOM;
   payload += (uint8_t)RequestDataGroup;
+  payload += (uint8_t)group_id;
+  command += (uint8_t)payload.size();
+  command += payload;
+  uint8_t checksum = 0;
+  for (uint8_t p : payload) checksum += p;
+  command += checksum;
+  command += EOM;
+  return command;
+}
+
+string CommandBuilder::requestPeriodicDataGroupDelivery(DataGroup group_id) {
+  string command, payload;
+  command += SOM;
+  payload += (uint8_t)RequestPeriodicDataGroupDelivery;
+  payload += (uint8_t)group_id;
+  payload += (uint8_t)0x01U;
+  command += (uint8_t)payload.size();
+  command += payload;
+  uint8_t checksum = 0;
+  for (uint8_t p : payload) checksum += p;
+  command += checksum;
+  command += EOM;
+  return command;
+}
+
+string CommandBuilder::cancelAllPeriodicDataGroupDelivery() {
+  return "\xC3\x01\x22\x22\xC6";
+}
+
+string CommandBuilder::cancelSpecificPeriodicGroupDelivery(DataGroup group_id) {
+  string command, payload;
+  command += SOM;
+  payload += (uint8_t)CancelSpecificPeriodicDataGroupDelivery;
   payload += (uint8_t)group_id;
   command += (uint8_t)payload.size();
   command += payload;

@@ -13,7 +13,7 @@
 using namespace std;
 
 volatile sig_atomic_t quit = 0;
-volatile sig_atomic_t gsig;
+volatile sig_atomic_t gsig = 2;
 
 void signal_handler(int sig) {
   signal(sig, signal_handler);
@@ -47,17 +47,28 @@ int main() {
   printf("main pid: %d\n", getpid());
   iap->startRead();
   iap->startKeepAlive();
+
+  iap->command(IAP::CommandBuilder::requestPeriodicDataGroupDelivery(SpHb));
+  sleep(6);
+  iap->command(IAP::CommandBuilder::requestPeriodicDataGroupDelivery(SpO2));
+  sleep(6);
+  iap->command(IAP::CommandBuilder::cancelSpecificPeriodicGroupDelivery(SpHb));
+  sleep(6);
+  iap->command(IAP::CommandBuilder::cancelSpecificPeriodicGroupDelivery(SpO2));
+  sleep(6);
+  iap->command(IAP::CommandBuilder::cancelAllPeriodicDataGroupDelivery());
   while (!quit) {
-    int r = (int) random() % 4;
-    DataGroup dg;
-    if (r == 0) dg = SerialNumbers;
-    if (r == 1) dg = Versions;
-    if (r == 2) dg = SpO2;
-    if (r == 3) dg = SpHb;
-    auto command = IAP::CommandBuilder::requestDataGroup(dg);
-    iap->command(command);
+//    int r = (int) random() % 4;
+//    DataGroup dg;
+//    if (r == 0) dg = SerialNumbers;
+//    if (r == 1) dg = Versions;
+//    if (r == 2) dg = SpO2;
+//    if (r == 3) dg = SpHb;
+//    auto command = IAP::CommandBuilder::requestDataGroup(dg);
+//    iap->command(command);
     sleep(1);
   }
+  iap->command(IAP::CommandBuilder::cancelAllPeriodicDataGroupDelivery());
   printf("main pid: %d\n", getpid());
   iap->killKeepAlive(gsig);
   iap->killRead(gsig);

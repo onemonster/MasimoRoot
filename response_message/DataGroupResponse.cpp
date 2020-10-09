@@ -3,6 +3,7 @@
 #include <utility>
 #include <cstdio>
 #include <iostream>
+#include <sstream>
 
 using namespace std;
 
@@ -23,15 +24,20 @@ void DataGroupResponse::record() {
   uint16_t i_v, dsp_v, mcu_v;
 
   uint16_t par_exceptions;
-  // Table 1-12
+  // Table 1-12, page 27 of 63
   int32_t par_value;
   uint16_t par_divisor;
   uint16_t par_alarm_status;
-  uint16_t par_dimension;
   uint8_t high_alarm_limit_configuration;
   int32_t high_alarm_limit;
   uint8_t low_alarm_limit_configuration;
   int32_t low_alarm_limit;
+
+  // Table 9-7, page 51 of 63
+  uint16_t dimension;
+
+  // Table 2-10, page 31 of 63
+  uint8_t sphb_precision_mode;
 
   switch (p_[1]) {
     case SerialNumbers:
@@ -43,46 +49,66 @@ void DataGroupResponse::record() {
       printf("[Versions] I(V.%d) DSP(V.%d) MCU(V.%d)\n", i_v, dsp_v, mcu_v);
       break;
     case SpO2:
-      Scan32(&par_value);
-      Scan16(&par_divisor);
+      Scan32(&par_value); Scan16(&par_divisor);
       Scan16(&par_exceptions);
       Scan16(&par_alarm_status);
-      Scan08(&high_alarm_limit_configuration);
-      Scan32(&high_alarm_limit);
-      Scan08(&low_alarm_limit_configuration);
-      Scan32(&low_alarm_limit);
-      Scan16(&par_dimension);
+      Scan08(&high_alarm_limit_configuration); Scan32(&high_alarm_limit);
+      Scan08(&low_alarm_limit_configuration);  Scan32(&low_alarm_limit);
+      Scan16(&dimension);
       switch (par_exceptions) {
-        case SUCCESS: break;
-        case LOW_SIGNAL_IQ: printf("[Exception][SpO2] Low Signal IQ\n"); break;
-        case INVALID_FUNCTIONAL_SPO2: printf("[Exception][SpO2] Invalid Functional SpO2\n"); break;
-        case STARTUP_STATE: printf("[Exception][SpO2] Startup State\n"); break;
+        case SpO2_SUCCESS: break;
+        case SpO2_LOW_SIGNAL_IQ: printf("[Exception][SpO2] Low Signal IQ\n"); break;
+        case SpO2_INVALID_FUNCTIONAL_SPO2: printf("[Exception][SpO2] Invalid Functional SpO2\n"); break;
+        case SpO2_STARTUP_STATE: printf("[Exception][SpO2] Startup State\n"); break;
         default: printf("[Exception][SpO2] Unknown = %x\n", par_exceptions); break;
       }
-      cout<<"[SpO2] "<<valueFormatted(par_value, par_dimension)<<endl;
+      cout<<"[SpO2] "<<valueFormatted(par_value, dimension, par_divisor, 0)<<endl;
+      break;
+    case SpHb:
+      Scan32(&par_value); Scan16(&par_divisor);
+      Scan16(&par_exceptions);
+      Scan16(&par_alarm_status);
+      Scan08(&high_alarm_limit_configuration); Scan32(&high_alarm_limit);
+      Scan08(&low_alarm_limit_configuration);  Scan32(&low_alarm_limit);
+      Scan08(&sphb_precision_mode);
+      Scan16(&dimension);
+      switch (par_exceptions) {
+        case SpHb_SUCCESS: break;
+        case SpHb_LOW_SPHB_CONFIDENCE: printf("[Exception][SpHb] Low SpHb Confidence\n"); break;
+        case SpHb_LOW_SPHB_PERFUSION_INDEX: printf("[Exception][SpHb] Low SpHb Perfusion Index\n"); break;
+        case SpHb_INVALID_SPHB: printf("[Exception][SpHb] Invalid SpHb\n"); break;
+        case SpHb_STARTUP_STATE: printf("[Exception][SpHb] Startup State\n"); break;
+        default: printf("[Exception][SpHb] Unknown = %x\n", par_exceptions); break;
+      }
+      cout << "[SpHb] "<<valueFormatted(par_value, dimension, par_divisor, 1)<<endl;
       break;
     default:
       cout<<"[DataGroup] Undefined"<<endl;
   }
 }
 
-string DataGroupResponse::valueFormatted(int32_t value, uint16_t dimension) {
+string DataGroupResponse::valueFormatted(int32_t value, uint16_t dimension, uint16_t divisor, int precision) {
+  ostringstream out;
+  out.precision(precision);
+  if (divisor) out<<fixed<<((double )value / divisor);
+  else out<<value;
+  string value_string = out.str();
   switch (dimension) {
-    case MDC_DIM_DIMLESS: return to_string(value);
-    case MDC_DIM_PERCENT: return to_string(value) + "%";
-    case MDC_DIM_X_G_PER_DL: return to_string(value) + "g/dL";
-    case MDC_DIM_HZ: return to_string(value) + "Hz";
-    case MDC_DIM_BEAT_PER_MIN: return to_string(value) + "BPM";
-    case MDC_DIM_RESP_PER_MIN: return to_string(value) + "RPM";
-    case MDC_DIM_KILO_PASCAL: return to_string(value) + "KPA";
-    case MDC_DIM_MMHG: return to_string(value) + "mmhg";
-    case MDC_DIM_FAHR: return to_string(value) + "°F";
-    case MDC_DIM_MILLI_MOLE_PER_L: return to_string(value) + "mmol/L";
-    case MDC_DIM_DEGC: return to_string(value) + "°C";
-    case MDC_DIM_MILLI_L_PER_DL:return to_string(value) + "mL/dL";
+    case MDC_DIM_DIMLESS: return value_string;
+    case MDC_DIM_PERCENT: return value_string + "%";
+    case MDC_DIM_X_G_PER_DL: return value_string + "g/dL";
+    case MDC_DIM_HZ: return value_string + "Hz";
+    case MDC_DIM_BEAT_PER_MIN: return value_string + "BPM";
+    case MDC_DIM_RESP_PER_MIN: return value_string + "RPM";
+    case MDC_DIM_KILO_PASCAL: return value_string + "KPA";
+    case MDC_DIM_MMHG: return value_string + "mmhg";
+    case MDC_DIM_FAHR: return value_string + "°F";
+    case MDC_DIM_MILLI_MOLE_PER_L: return value_string + "mmol/L";
+    case MDC_DIM_DEGC: return value_string + "°C";
+    case MDC_DIM_MILLI_L_PER_DL:return value_string + "ml/dl";
     default: printf("[DEBUG] Unknown Dimension");
   }
-  return to_string(value);
+  return value_string;
 }
 
 int DataGroupResponse::Scan08(int8_t *dest) {

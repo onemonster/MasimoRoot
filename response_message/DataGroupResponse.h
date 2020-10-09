@@ -12,11 +12,30 @@ public:
 
   void record() override;
 
+private:
+
+  // Table 2-4, page 30 of 63
   enum SpO2Exception {
-    SUCCESS = 0x0000,
-    LOW_SIGNAL_IQ = 0x0001,
-    INVALID_FUNCTIONAL_SPO2 = 0x0004,
-    STARTUP_STATE = 0x0010
+    SpO2_SUCCESS = 0x0000,
+    SpO2_LOW_SIGNAL_IQ = 0x0001,
+    SpO2_INVALID_FUNCTIONAL_SPO2 = 0x0004,
+    SpO2_STARTUP_STATE = 0x0010
+  };
+
+  // Table 2-9, page 31 of 63
+  enum SpHbException {
+    SpHb_SUCCESS = 0x0000,
+    SpHb_LOW_SPHB_CONFIDENCE = 0x0001,
+    SpHb_LOW_SPHB_PERFUSION_INDEX = 0x0002,
+    SpHb_INVALID_SPHB = 0x0004,
+    SpHb_STARTUP_STATE = 0x0010
+  };
+
+  // Table 2-10, page 31 of 63
+  enum SpHbPrecisionMode {
+    NEAREST_0_DOT_1 = 0x00,
+    NEAREST_0_DOT_5 = 0x01,
+    WHOLE_NUMBER = 0x02,
   };
 
   // Table 9-7, page 51 of 63
@@ -35,11 +54,10 @@ public:
     MDC_DIM_MILLI_L_PER_DL = 6418,
   };
 
-private:
   int ri_; // record index
   std::vector<uint8_t> p_;
 
-  std::string valueFormatted(int32_t value, uint16_t dimension);
+  static std::string valueFormatted(int32_t value, uint16_t dimension, uint16_t divisor, int precision);
 
   int Scan08(int8_t *dest); // returns index
   int Scan08(uint8_t *dest); // returns index

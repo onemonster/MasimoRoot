@@ -47,11 +47,12 @@ int main() {
   }
 
   while (!quit) {
-    int r = (int)random() % 3;
+    int r = (int)random() % 4;
     DataGroup dg;
     if (r == 0) dg = SerialNumbers;
     if (r == 1) dg = Versions;
     if (r == 2) dg = SpO2;
+    if (r == 3) dg = SpHb;
     auto command = IAP::CommandBuilder::requestDataGroup(dg);
     s->write(IAP::CommandBuilder::keepAlive());
     s->write(command);

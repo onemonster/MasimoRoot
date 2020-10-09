@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include "response_message/ResponseMessage.h"
+#include "response_message/DataGroup.h"
 
 namespace IAP {
   const uint8_t SOM = 0xC3; // Start of Message
@@ -50,10 +51,21 @@ namespace IAP {
   };
 
   namespace CommandBuilder {
+    enum CommandCode {
+      RequestProtocolRevision = 0x10,
+      KeepAliveRequest = 0x11,
+      RequestDataGroup = 0x20,
+      RequestPeriodicDataGroupDelivery = 0x21,
+      CancelAllPeriodicDataGroupDelivery = 0x22,
+      CancelSpecificPeriodicDataGroupDelivery = 0x23,
+      ChannelWaveformRequest = 0x35
+    };
+
     std::string ack();
 
     std::string keepAlive(); // Must call every two seconds
-    std::string requestDataGroup(uint8_t group_id);
+
+    std::string requestDataGroup(DataGroup group_id);
 
     std::string requestPeriodicDataGroupDelivery(uint8_t group_id);
 

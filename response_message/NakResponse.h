@@ -6,7 +6,11 @@
 class NakResponse : public ResponseMessage {
 public:
   explicit NakResponse(uint8_t nak_type);
+
+  ~NakResponse() override = default;
+
   void record() override;
+
 private:
   uint8_t nak_type_;
   enum NakType {

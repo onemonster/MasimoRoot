@@ -1,18 +1,23 @@
 #include <iostream>
 #include <csignal>
 #include <zconf.h>
+#include <cstring>
+#include <fcntl.h>
 #include "SerialPort.h"
 #include "IAP.h"
 #include "response_message/ProtocolRevisionResponse.h"
+#include "IAPClient.h"
 
 #define P16(a, b) ((unsigned short)(((unsigned short)(a) << 8U) | ((unsigned char)(b))))
 
 using namespace std;
 
 volatile sig_atomic_t quit = 0;
+volatile sig_atomic_t gsig;
 
 void signal_handler(int sig) {
   signal(sig, signal_handler);
+  gsig = sig;
   quit = 1;
 }
 
@@ -30,48 +35,31 @@ void print_bits(unsigned short octet) {
 }
 
 int main() {
-//  auto command = IAP::CommandBuilder::requestDataGroup(SerialNumbers);
-//  for (uint8_t c : command) printf("%x ", c);
-//  return 0;
   signal(SIGINT, signal_handler);
   signal(SIGTERM, signal_handler);
 #ifdef SIGBREAK
   signal(SIGBREAK, signal_handler);
 #endif
 
-  Socket *s = new SerialPort("/dev/ttyUSB0", B921600);
-  IAP::MessageParser parser{};
+  auto s = new SerialPort("/dev/ttyUSB0", B921600);
+  auto iap = new IAPClient(s);
 
-  if (s->open()) {
-    return -1;
-  }
-
+  printf("main pid: %d\n", getpid());
+  iap->startRead();
+  iap->startKeepAlive();
   while (!quit) {
-    int r = (int)random() % 4;
+    int r = (int) random() % 4;
     DataGroup dg;
     if (r == 0) dg = SerialNumbers;
     if (r == 1) dg = Versions;
     if (r == 2) dg = SpO2;
     if (r == 3) dg = SpHb;
     auto command = IAP::CommandBuilder::requestDataGroup(dg);
-    s->write(IAP::CommandBuilder::keepAlive());
-    s->write(command);
-//    s->write(IAP::CommandBuilder::keepAlive());
+    iap->command(command);
     sleep(1);
-    s->read(5000);
-    unsigned char b = 0;
-    while (s->getBufferSize() > 0) {
-      s->popByte(&b);
-      parser.addByte(b);
-      if (parser.isValid()) {
-        if (auto response = parser.build()) {
-          response->record();
-          delete response;
-        }
-      }
-    }
   }
-  s->close();
-
+  printf("main pid: %d\n", getpid());
+  iap->killKeepAlive(gsig);
+  iap->killRead(gsig);
   return 0;
 }

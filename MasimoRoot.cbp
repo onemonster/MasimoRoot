@@ -72,6 +72,12 @@
 		<Unit filename="/home/parallels/CLionProjects/MasimoRoot/IAP.h">
 			<Option target="MasimoRoot"/>
 		</Unit>
+		<Unit filename="/home/parallels/CLionProjects/MasimoRoot/IAPClient.cpp">
+			<Option target="MasimoRoot"/>
+		</Unit>
+		<Unit filename="/home/parallels/CLionProjects/MasimoRoot/IAPClient.h">
+			<Option target="MasimoRoot"/>
+		</Unit>
 		<Unit filename="/home/parallels/CLionProjects/MasimoRoot/Root.cpp">
 			<Option target="MasimoRoot"/>
 		</Unit>

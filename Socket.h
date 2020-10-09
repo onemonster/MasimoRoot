@@ -4,6 +4,8 @@
 
 class Socket {
 public:
+  virtual ~Socket() = default;
+
   virtual int read(size_t max_len) = 0;
 
   virtual int popByte(uint8_t *b) = 0;

@@ -28,8 +28,6 @@ int SerialPort::open() {
     return errno;
   }
 
-  printf("fd %d\n", fd_);
-
   termios tty{};
   if (tcgetattr(fd_, &tty)) {
     perror("tcgetattr");

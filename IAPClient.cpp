@@ -23,9 +23,6 @@ IAPClient::~IAPClient() {
 }
 
 int IAPClient::command(string message) {
-//  cout<<"[COMMAND] ";
-//  for (uint8_t c : message) printf("%x ", c);
-//  cout<<endl;
   return socket_->write(move(message));
 }
 

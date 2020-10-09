@@ -4,6 +4,7 @@
 #include <string>
 #include "response_message/ResponseMessage.h"
 #include "response_message/DataGroup.h"
+#include "response_message/ChannelId.h"
 
 namespace IAP {
   const uint8_t SOM = 0xC3; // Start of Message
@@ -73,6 +74,6 @@ namespace IAP {
 
     std::string cancelSpecificPeriodicGroupDelivery(DataGroup group_id);
 
-    std::string channelWaveformRequest(uint32_t channel_id, uint16_t waveform_bitmask);
+    std::string channelWaveformRequest(ChannelId channel_id, uint16_t waveform_bitmask);
   }
 }

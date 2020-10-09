@@ -19,10 +19,6 @@ DataGroupResponse::DataGroupResponse(std::vector<uint8_t> payload) {
 void DataGroupResponse::record() {
   ri_ = 2;
 
-  // etc
-  uint64_t serial_number;
-  uint16_t i_v, dsp_v, mcu_v;
-
   uint16_t par_exceptions;
   // Table 1-12, page 27 of 63
   int32_t par_value;
@@ -36,19 +32,22 @@ void DataGroupResponse::record() {
   // Table 9-7, page 51 of 63
   uint16_t dimension;
 
-  // Table 2-10, page 31 of 63
-  uint8_t sphb_precision_mode;
-
   switch (p_[1]) {
-    case SerialNumbers:
+    case DG_SerialNumbers:
+    {
+      uint64_t serial_number;
       Scan48(&serial_number);
       cout<<"[Serial Number] "<<serial_number<<endl;
       break;
-    case Versions:
+    }
+    case DG_Versions:
+    {
+      uint16_t i_v, dsp_v, mcu_v;
       Scan16(&i_v); Scan16(&dsp_v); Scan16(&mcu_v);
       printf("[Versions] I(V.%d) DSP(V.%d) MCU(V.%d)\n", i_v, dsp_v, mcu_v);
       break;
-    case SpO2:
+    }
+    case DG_SpO2:
       Scan32(&par_value); Scan16(&par_divisor);
       Scan16(&par_exceptions);
       Scan16(&par_alarm_status);
@@ -64,7 +63,10 @@ void DataGroupResponse::record() {
       }
       cout<<"[SpO2] "<<valueFormatted(par_value, dimension, par_divisor, 0)<<endl;
       break;
-    case SpHb:
+    case DG_SpHb:
+    {
+      // Table 2-10, page 31 of 63
+      uint8_t sphb_precision_mode;
       Scan32(&par_value); Scan16(&par_divisor);
       Scan16(&par_exceptions);
       Scan16(&par_alarm_status);
@@ -82,8 +84,25 @@ void DataGroupResponse::record() {
       }
       cout << "[SpHb] "<<valueFormatted(par_value, dimension, par_divisor, 1)<<endl;
       break;
+    }
+    case DG_DeviceInfo:
+    {
+      uint8_t sv[12], type; // software version
+      for (unsigned char & i : sv) Scan08(&i);
+      Scan08(&type);
+      uint64_t serial_number;
+      Scan48(&serial_number);
+      uint32_t alarm_channels, system_fault, monitoring_channels;
+      uint16_t alarm_status;
+      Scan32(&alarm_channels);
+      Scan16(&alarm_status);
+      Scan32(&system_fault);
+      Scan32(&monitoring_channels);
+      printf("[DeviceInfo] %x\n", alarm_channels);
+      break;
+    }
     default:
-      cout<<"[DataGroup] Undefined"<<endl;
+      printf("[DataGroup Unknown] %x\n", p_[1]);
   }
 }
 

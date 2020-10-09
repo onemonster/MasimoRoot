@@ -48,14 +48,10 @@ int main() {
   iap->startRead();
   iap->startKeepAlive();
 
-  iap->command(IAP::CommandBuilder::requestPeriodicDataGroupDelivery(SpHb));
-  sleep(6);
-  iap->command(IAP::CommandBuilder::requestPeriodicDataGroupDelivery(SpO2));
-  sleep(6);
-  iap->command(IAP::CommandBuilder::cancelSpecificPeriodicGroupDelivery(SpHb));
-  sleep(6);
-  iap->command(IAP::CommandBuilder::cancelSpecificPeriodicGroupDelivery(SpO2));
-  sleep(6);
+  iap->command(IAP::CommandBuilder::requestPeriodicDataGroupDelivery(DG_SpHb));
+  sleep(3);
+  iap->command(IAP::CommandBuilder::requestPeriodicDataGroupDelivery(DG_SpO2));
+  sleep(3);
   iap->command(IAP::CommandBuilder::cancelAllPeriodicDataGroupDelivery());
   while (!quit) {
 //    int r = (int) random() % 4;

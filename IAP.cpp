@@ -171,3 +171,22 @@ string CommandBuilder::cancelSpecificPeriodicGroupDelivery(DataGroup group_id) {
   command += EOM;
   return command;
 }
+
+string CommandBuilder::channelWaveformRequest(ChannelId channel_id, uint16_t waveform_bitmask) {
+  string command, payload;
+  command += SOM;
+  payload += (uint8_t)ChannelWaveformRequest;
+  payload += (uint8_t)((uint32_t)channel_id >> 24U);
+  payload += (uint8_t)((uint32_t)channel_id >> 16U);
+  payload += (uint8_t)((uint32_t)channel_id >> 8U);
+  payload += (uint8_t)((uint32_t)channel_id);
+  payload += (uint8_t)((uint16_t)waveform_bitmask >> 8U);
+  payload += (uint8_t)((uint16_t)waveform_bitmask);
+  command += (uint8_t)payload.size();
+  command += payload;
+  uint8_t checksum = 0;
+  for (uint8_t p : payload) checksum += p;
+  command += checksum;
+  command += EOM;
+  return command;
+}

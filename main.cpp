@@ -4,7 +4,7 @@
 #include <cstring>
 #include <fcntl.h>
 #include "SerialPort.h"
-#include "IAP.h"
+#include "IAPProtocol.h"
 #include "response_message/ProtocolRevisionResponse.h"
 #include "IAPClient.h"
 

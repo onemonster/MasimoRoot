@@ -4,7 +4,7 @@
 #include <utility>
 #include <iostream>
 #include "IAPClient.h"
-#include "IAP.h"
+#include "IAPProtocol.h"
 
 using namespace std;
 using namespace IAP;

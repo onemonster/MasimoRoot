@@ -1,4 +1,4 @@
-#include "IAP.h"
+#include "IAPProtocol.h"
 #include "response_message/AckResponse.h"
 #include "response_message/NakResponse.h"
 #include "response_message/ProtocolRevisionResponse.h"

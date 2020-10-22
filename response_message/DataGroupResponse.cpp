@@ -101,6 +101,86 @@ void DataGroupResponse::record() {
       printf("[DeviceInfo] %x\n", alarm_channels);
       break;
     }
+    case DG_ChannelOptical:
+    {
+      uint32_t exception, alarm, supported_parameters;
+      uint8_t reserved_8; uint16_t reserved_16;
+      Scan32(&exception); Scan32(&alarm); Scan32(&supported_parameters);
+      Scan08(&reserved_8); Scan16(&reserved_16);
+      printf("[ChannelOptical] exception: 0x%x, alarm: 0x%x, supported_parameters: 0x%x\n",
+             exception, alarm, supported_parameters);
+      printf("  Supported Parameters:\n");
+      if (supported_parameters & OCP_FUNCTIONAL_SpO2) printf("    Functional SpO2                        \n");
+      if (supported_parameters & OCP_PR             ) printf("    PR (Pulse Rate)                        \n");
+      if (supported_parameters & OCP_PERFUSION_INDEX) printf("    Perfusion index                        \n");
+      if (supported_parameters & OCP_SpCO           ) printf("    SpCO                                   \n");
+      if (supported_parameters & OCP_SpMet          ) printf("    SpMet                                  \n");
+      if (supported_parameters & OCP_SpHb           ) printf("    SpHb                                   \n");
+      if (supported_parameters & OCP_SpOC           ) printf("    SpOC (O2 Content)                      \n");
+      if (supported_parameters & OCP_PVi            ) printf("    PVi (Pleth Variablility Index)         \n");
+      if (supported_parameters & OCP_RRp            ) printf("    RRp                                    \n");
+      if (supported_parameters & OCP_ORi            ) printf("    ORi                                    \n");
+      if (supported_parameters & OCP_RPVi           ) printf("    RPVi (Rainbow Pleth Variablility Index)\n");
+      break;
+    }
+    case DG_ChannelAcoustic:
+    {
+      uint32_t exception, alarm, supported_parameters;
+      uint8_t reserved_8; uint16_t reserved_16;
+      Scan32(&exception); Scan32(&alarm); Scan32(&supported_parameters);
+      Scan08(&reserved_8); Scan16(&reserved_16);
+      printf("[ChannelAcoustic] exception: 0x%x, alarm: 0x%x, supported_parameters: 0x%x\n",
+             exception, alarm, supported_parameters);
+      break;
+    }
+    case DG_ChannelEEG:
+    {
+      uint32_t exception, alarm, supported_parameters;
+      uint8_t reserved_8; uint16_t reserved_16;
+      Scan32(&exception); Scan32(&alarm); Scan32(&supported_parameters);
+      Scan08(&reserved_8); Scan16(&reserved_16);
+      printf("[ChannelEEG] exception: 0x%x, alarm: 0x%x, supported_parameters: 0x%x\n",
+             exception, alarm, supported_parameters);
+      printf("  Supported Parameters:\n");
+      if (supported_parameters & ECP_PSI ) printf("    PSI \n");
+      if (supported_parameters & ECP_EMG ) printf("    EMG \n");
+      if (supported_parameters & ECP_SUP ) printf("    SUP \n");
+      if (supported_parameters & ECP_SEFL) printf("    SEFL\n");
+      if (supported_parameters & ECP_SEFR) printf("    SEFR\n");
+      if (supported_parameters & ECP_ARTF) printf("    ARTF\n");
+      printf("  Exceptions:\n");
+      if (exception & ECE_NoCableConnected                )printf("    No Cable Connected                 \n");
+      if (exception & ECE_IncompatibleCable               )printf("    Incompatible Cable                 \n");
+      if (exception & ECE_CableLifeExpired                )printf("    Cable life expired                 \n");
+      if (exception & ECE_DefectiveCable                  )printf("    Defective Cable                    \n");
+      if (exception & ECE_NoSensorConnected               )printf("    No Sensor Connected                \n");
+      if (exception & ECE_IncompatibleSensor              )printf("    Incompatible Sensor                \n");
+      if (exception & ECE_SensorLifeExpired               )printf("    Sensor life expired                \n");
+      if (exception & ECE_DefectiveSensor                 )printf("    Defective Sensor                   \n");
+      if (exception & ECE_SensorOffPatient                )printf("    Sensor Off Patient                 \n");
+      if (exception & ECE_NoTapeConnected                 )printf("    No tape connected                  \n");
+      if (exception & ECE_IncompatibleTape                )printf("    Incompatible tape                  \n");
+      if (exception & ECE_DefectiveTape                   )printf("    Defective Tape                     \n");
+      if (exception & ECE_TapeLifeExpired                 )printf("    Tape life expired                  \n");
+      if (exception & ECE_DemoMode                        )printf("    Demo mode                          \n");
+      if (exception & ECE_PatientInterferenceDetected     )printf("    Patient Interference Detected      \n");
+      if (exception & ECE_ImpedanceValueIndeterminate     )printf("    Impedance value indeterminate      \n");
+      if (exception & ECE_HighImpedanceDetected           )printf("    High impedance detected            \n");
+      if (exception & ECE_GelBridgingDetected             )printf("    Gel bridging detected              \n");
+      if (exception & ECE_ImproperSensorConnectionDetected)printf("    Improper sensor connection detected\n");
+      if (exception & ECE_ReplaceSensor24Hours            )printf("    Replace sensor-24 hours            \n");
+      break;
+    }
+    case DG_ChannelCapnography:
+    {
+      uint32_t exception, alarm, supported_parameters;
+      uint8_t reserved_8; uint16_t reserved_16;
+      Scan32(&exception); Scan32(&alarm); Scan32(&supported_parameters);
+      Scan08(&reserved_8); Scan16(&reserved_16);
+      printf("[ChannelCapnography] exception: 0x%x, alarm: 0x%x, supported_parameters: 0x%x\n",
+             exception, alarm, supported_parameters);
+      break;
+    }
     default:
       printf("[DataGroup Unknown] %x\n", p_[1]);
   }

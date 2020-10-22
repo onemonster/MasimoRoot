@@ -66,16 +66,16 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/home/parallels/CLionProjects/MasimoRoot/IAP.cpp">
-			<Option target="MasimoRoot"/>
-		</Unit>
-		<Unit filename="/home/parallels/CLionProjects/MasimoRoot/IAP.h">
-			<Option target="MasimoRoot"/>
-		</Unit>
 		<Unit filename="/home/parallels/CLionProjects/MasimoRoot/IAPClient.cpp">
 			<Option target="MasimoRoot"/>
 		</Unit>
 		<Unit filename="/home/parallels/CLionProjects/MasimoRoot/IAPClient.h">
+			<Option target="MasimoRoot"/>
+		</Unit>
+		<Unit filename="/home/parallels/CLionProjects/MasimoRoot/IAPProtocol.cpp">
+			<Option target="MasimoRoot"/>
+		</Unit>
+		<Unit filename="/home/parallels/CLionProjects/MasimoRoot/IAPProtocol.h">
 			<Option target="MasimoRoot"/>
 		</Unit>
 		<Unit filename="/home/parallels/CLionProjects/MasimoRoot/Root.cpp">
@@ -106,6 +106,18 @@
 			<Option target="MasimoRoot"/>
 		</Unit>
 		<Unit filename="/home/parallels/CLionProjects/MasimoRoot/response_message/ChannelId.h">
+			<Option target="MasimoRoot"/>
+		</Unit>
+		<Unit filename="/home/parallels/CLionProjects/MasimoRoot/response_message/ChannelWaveformDataResponse.cpp">
+			<Option target="MasimoRoot"/>
+		</Unit>
+		<Unit filename="/home/parallels/CLionProjects/MasimoRoot/response_message/ChannelWaveformDataResponse.h">
+			<Option target="MasimoRoot"/>
+		</Unit>
+		<Unit filename="/home/parallels/CLionProjects/MasimoRoot/response_message/ChannelWaveformResponse.cpp">
+			<Option target="MasimoRoot"/>
+		</Unit>
+		<Unit filename="/home/parallels/CLionProjects/MasimoRoot/response_message/ChannelWaveformResponse.h">
 			<Option target="MasimoRoot"/>
 		</Unit>
 		<Unit filename="/home/parallels/CLionProjects/MasimoRoot/response_message/DataGroup.h">

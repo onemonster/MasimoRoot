@@ -14,6 +14,53 @@ public:
 
 private:
 
+  // Table 2-1, page 28 of 63
+  enum OpticalChannelParameter {
+    OCP_FUNCTIONAL_SpO2 = 0x00000001,
+    OCP_PR              = 0x00000002, // Pulse Rate
+    OCP_PERFUSION_INDEX = 0x00000004,
+    OCP_SpCO            = 0x00000008,
+    OCP_SpMet           = 0x00000010,
+    OCP_SpHb            = 0x00000040,
+    OCP_SpOC            = 0x00002000, // O2 Content
+    OCP_PVi             = 0x00004000, // Pleth Variablility Index
+    OCP_RRp             = 0x01000000,
+    OCP_ORi             = 0x02000000,
+    OCP_RPVi            = 0x04000000, // Rainbow Pleth Variablility Index
+  };
+
+  enum EEGChannelParamter {
+    ECP_PSI  = 0x00000001,
+    ECP_EMG  = 0x00000002,
+    ECP_SUP  = 0x00000004,
+    ECP_SEFL = 0x00000010,
+    ECP_SEFR = 0x00000020,
+    ECP_ARTF = 0x00000040,
+  };
+
+  enum EEGChannelException {
+    ECE_NoCableConnected                 = 0x00000001,
+    ECE_IncompatibleCable                = 0x00000002,
+    ECE_CableLifeExpired                 = 0x00000004,
+    ECE_DefectiveCable                   = 0x00000008,
+    ECE_NoSensorConnected                = 0x00000010,
+    ECE_IncompatibleSensor               = 0x00000020,
+    ECE_SensorLifeExpired                = 0x00000040,
+    ECE_DefectiveSensor                  = 0x00000080,
+    ECE_SensorOffPatient                 = 0x00000100,
+    ECE_NoTapeConnected                  = 0x00000200,
+    ECE_IncompatibleTape                 = 0x00000400,
+    ECE_DefectiveTape                    = 0x00000800,
+    ECE_TapeLifeExpired                  = 0x00001000,
+    ECE_DemoMode                         = 0x00002000,
+    ECE_PatientInterferenceDetected      = 0x00004000,
+    ECE_ImpedanceValueIndeterminate      = 0x00008000,
+    ECE_HighImpedanceDetected            = 0x00010000,
+    ECE_GelBridgingDetected              = 0x00020000,
+    ECE_ImproperSensorConnectionDetected = 0x00040000,
+    ECE_ReplaceSensor24Hours             = 0x00080000,
+  };
+
   // Table 2-4, page 30 of 63
   enum SpO2Exception {
     SpO2_SUCCESS = 0x0000,

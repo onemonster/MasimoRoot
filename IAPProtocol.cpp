@@ -4,12 +4,15 @@
 #include "response_message/ProtocolRevisionResponse.h"
 #include "response_message/DataGroupResponse.h"
 #include "response_message/UnknownResponse.h"
+#include "response_message/ChannelWaveformResponse.h"
+#include "response_message/ChannelWaveformDataResponse.h"
 #include <numeric>
 
 using namespace std;
 using namespace IAP;
 
 #define P16(a, b) ((uint16_t)(((uint16_t)(a) << 8U) | ((uint8_t)(b))))
+#define P32(a, b, c, d) (((uint32_t)P16((a), (b))) << 16U | P16((c), (d)))
 
 bool MessageParser::isValid() {
   // Check is SOM and EOM encountered
@@ -84,6 +87,11 @@ void MessageParser::addByte(uint8_t b) {
 }
 
 ResponseMessage *MessageParser::build() {
+//  printf("\n");
+//  for (auto c : payload_) {
+//    printf("0x%02x ", c);
+//  }
+//  printf("\n");
   ResponseMessage *p;
   if (!isValid()) return nullptr;
   switch (payload_[0]) {
@@ -99,6 +107,25 @@ ResponseMessage *MessageParser::build() {
     case DataGroup:
       p = new DataGroupResponse(payload_);
       break;
+    case ChannelWaveformResponse:
+    {
+      uint32_t channel_id = P32(payload_[1], payload_[2], payload_[3], payload_[4]);
+      if (channel_id == CH_EEG) {
+        p = new class ChannelWaveformResponse(channel_id, P16(payload_[5], payload_[6]), payload_[7],
+            payload_[8], P16(payload_[9], payload_[10]), P16(payload_[11], payload_[12]),
+            payload_[13], P16(payload_[14], payload_[15]), P16(payload_[16], payload_[17]));
+      } else {
+        p = new class ChannelWaveformResponse(channel_id, P16(payload_[5], payload_[6]), payload_[7]);
+      }
+      break;
+    }
+    case ChannelWaveformData: {
+      auto waveform_payload_start = payload_.begin() + 4;
+      auto waveform_payload_end = payload_.end();
+      auto waveform_payload = vector(waveform_payload_start, waveform_payload_end);
+      p = new ChannelWaveformDataResponse(payload_[1], payload_[2], payload_[3], waveform_payload);
+      break;
+    }
     default:
       p = new UnknownResponse(payload_);
   }
@@ -128,9 +155,9 @@ string CommandBuilder::keepAlive() {
 string CommandBuilder::requestDataGroup(DataGroup group_id) {
   string command, payload;
   command += SOM;
-  payload += (uint8_t)RequestDataGroup;
-  payload += (uint8_t)group_id;
-  command += (uint8_t)payload.size();
+  payload += (uint8_t) RequestDataGroup;
+  payload += (uint8_t) group_id;
+  command += (uint8_t) payload.size();
   command += payload;
   uint8_t checksum = 0;
   for (uint8_t p : payload) checksum += p;
@@ -142,10 +169,10 @@ string CommandBuilder::requestDataGroup(DataGroup group_id) {
 string CommandBuilder::requestPeriodicDataGroupDelivery(DataGroup group_id) {
   string command, payload;
   command += SOM;
-  payload += (uint8_t)RequestPeriodicDataGroupDelivery;
-  payload += (uint8_t)group_id;
-  payload += (uint8_t)0x01U;
-  command += (uint8_t)payload.size();
+  payload += (uint8_t) RequestPeriodicDataGroupDelivery;
+  payload += (uint8_t) group_id;
+  payload += (uint8_t) 0x01U;
+  command += (uint8_t) payload.size();
   command += payload;
   uint8_t checksum = 0;
   for (uint8_t p : payload) checksum += p;
@@ -161,9 +188,9 @@ string CommandBuilder::cancelAllPeriodicDataGroupDelivery() {
 string CommandBuilder::cancelSpecificPeriodicGroupDelivery(DataGroup group_id) {
   string command, payload;
   command += SOM;
-  payload += (uint8_t)CancelSpecificPeriodicDataGroupDelivery;
-  payload += (uint8_t)group_id;
-  command += (uint8_t)payload.size();
+  payload += (uint8_t) CancelSpecificPeriodicDataGroupDelivery;
+  payload += (uint8_t) group_id;
+  command += (uint8_t) payload.size();
   command += payload;
   uint8_t checksum = 0;
   for (uint8_t p : payload) checksum += p;
@@ -175,14 +202,14 @@ string CommandBuilder::cancelSpecificPeriodicGroupDelivery(DataGroup group_id) {
 string CommandBuilder::channelWaveformRequest(ChannelId channel_id, uint16_t waveform_bitmask) {
   string command, payload;
   command += SOM;
-  payload += (uint8_t)ChannelWaveformRequest;
-  payload += (uint8_t)((uint32_t)channel_id >> 24U);
-  payload += (uint8_t)((uint32_t)channel_id >> 16U);
-  payload += (uint8_t)((uint32_t)channel_id >> 8U);
-  payload += (uint8_t)((uint32_t)channel_id);
-  payload += (uint8_t)((uint16_t)waveform_bitmask >> 8U);
-  payload += (uint8_t)((uint16_t)waveform_bitmask);
-  command += (uint8_t)payload.size();
+  payload += (uint8_t) ChannelWaveformRequest;
+  payload += (uint8_t) ((uint32_t) channel_id >> 24U);
+  payload += (uint8_t) ((uint32_t) channel_id >> 16U);
+  payload += (uint8_t) ((uint32_t) channel_id >> 8U);
+  payload += (uint8_t) ((uint32_t) channel_id);
+  payload += (uint8_t) ((uint16_t) waveform_bitmask >> 8U);
+  payload += (uint8_t) ((uint16_t) waveform_bitmask);
+  command += (uint8_t) payload.size();
   command += payload;
   uint8_t checksum = 0;
   for (uint8_t p : payload) checksum += p;

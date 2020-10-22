@@ -2,13 +2,16 @@
 
 #define WF_CANCEL  0x0000
 
+// Capnography Channel Waveform
 #define WF_CAP_CO2 0x0001
 #define WF_CAP_O2  0x0002
 #define WF_CAP_AA1 0x0004
 
+// EEG Channel Waveform Bitmask
 #define WF_EEG_REF 0x0001
 #define WF_EEG_BIP 0x0002
 
+// Rainbow Channel Waveform Bitmask
 #define WF_RBW_PTH 0x0001
 #define WF_RBW_ACU 0x0002
 #define WF_RBW_SIQ 0x0004

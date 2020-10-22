@@ -48,11 +48,17 @@ int main() {
   iap->startRead();
   iap->startKeepAlive();
 
-  iap->command(IAP::CommandBuilder::requestPeriodicDataGroupDelivery(DG_SpHb));
-  sleep(3);
-  iap->command(IAP::CommandBuilder::requestPeriodicDataGroupDelivery(DG_SpO2));
-  sleep(3);
-  iap->command(IAP::CommandBuilder::cancelAllPeriodicDataGroupDelivery());
+  iap->command(IAP::CommandBuilder::requestDataGroup(DG_ChannelOptical));
+  iap->command(IAP::CommandBuilder::requestDataGroup(DG_ChannelAcoustic));
+  iap->command(IAP::CommandBuilder::requestDataGroup(DG_ChannelEEG));
+  iap->command(IAP::CommandBuilder::requestDataGroup(DG_ChannelCapnography));
+//  iap->command(IAP::CommandBuilder::channelWaveformRequest(CH_Optical, 1));
+  iap->command(IAP::CommandBuilder::channelWaveformRequest(CH_EEG, WF_EEG_REF));
+//  iap->command(IAP::CommandBuilder::requestPeriodicDataGroupDelivery(DG_SpHb));
+//  sleep(3);
+//  iap->command(IAP::CommandBuilder::requestPeriodicDataGroupDelivery(DG_SpO2));
+//  sleep(3);
+//  iap->command(IAP::CommandBuilder::cancelAllPeriodicDataGroupDelivery());
   while (!quit) {
 //    int r = (int) random() % 4;
 //    DataGroup dg;
@@ -64,7 +70,8 @@ int main() {
 //    iap->command(command);
     sleep(1);
   }
-  iap->command(IAP::CommandBuilder::cancelAllPeriodicDataGroupDelivery());
+  iap->command(IAP::CommandBuilder::channelWaveformRequest(CH_EEG, WF_CANCEL));
+  // iap->command(IAP::CommandBuilder::cancelAllPeriodicDataGroupDelivery());
   printf("main pid: %d\n", getpid());
   iap->killKeepAlive(gsig);
   iap->killRead(gsig);

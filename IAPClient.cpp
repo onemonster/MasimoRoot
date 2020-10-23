@@ -3,8 +3,11 @@
 #include <csignal>
 #include <utility>
 #include <iostream>
+#include <map>
 #include "IAPClient.h"
 #include "IAPProtocol.h"
+#include "response_message/ChannelWaveformResponse.h"
+#include "response_message/ChannelWaveformDataResponse.h"
 
 using namespace std;
 using namespace IAP;
@@ -82,6 +85,8 @@ int IAPClient::killKeepAlive(int sig) const {
 
 void IAPClient::startRead() {
   pid_t pid = Fork();
+  map<uint8_t, pair<uint32_t, uint16_t>> stream_handle_to_id;
+  map<uint8_t, uint8_t> stream_handle_to_ordinal;
   if (pid) { // Parent
     read_pid_ = pid;
   } else { // Child
@@ -101,7 +106,25 @@ void IAPClient::startRead() {
         parser.addByte(b);
         if (parser.isValid()) {
           if (auto response = parser.build()) {
-            response->record();
+            if (typeid(*response) == typeid(ChannelWaveformResponse)) {
+              auto waveform_response = dynamic_cast<ChannelWaveformResponse*>(response);
+              auto handle = waveform_response->get_handle();
+              auto id = waveform_response->get_id();
+              stream_handle_to_id[handle] = id;
+              stream_handle_to_ordinal[handle] = 250;
+              response->record();
+            }
+            else if (typeid(*response) == typeid(ChannelWaveformDataResponse)) {
+              auto data_response = dynamic_cast<ChannelWaveformDataResponse*>(response);
+              auto handle = data_response->get_handle();
+              auto id_pair = stream_handle_to_id[handle];
+              auto previous_ordinal = stream_handle_to_ordinal[handle];
+              data_response->record(id_pair.first, id_pair.second, previous_ordinal);
+              stream_handle_to_ordinal[handle] = data_response->get_ordinal_number();
+            }
+            else {
+              response->record();
+            }
             delete response;
           }
         }

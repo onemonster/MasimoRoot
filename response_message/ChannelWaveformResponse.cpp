@@ -42,3 +42,11 @@ void ChannelWaveformResponse::record() {
     }
   }
 }
+
+std::pair<uint32_t, uint16_t> ChannelWaveformResponse::get_id() {
+  return { channel_id_, waveform_bitmask_ };
+}
+
+uint8_t ChannelWaveformResponse::get_handle() {
+  return streaming_handle_;
+}

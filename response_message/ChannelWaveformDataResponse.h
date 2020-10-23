@@ -14,6 +14,12 @@ public:
 
   void record() override;
 
+  void record(uint32_t channel_id, uint16_t waveform_bitmask, uint8_t previous_ordinal_number);
+
+  uint8_t get_handle();
+
+  uint8_t get_ordinal_number();
+
 private:
   uint8_t streaming_handle_;
   uint8_t ordinal_number_;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <utility>
 #include "ResponseMessage.h"
 
 class ChannelWaveformResponse : public ResponseMessage {
@@ -11,7 +12,11 @@ public:
                           uint8_t mvpmm, uint16_t num_of_pixels_y, uint16_t screen_size_mm_y);
   ~ChannelWaveformResponse() override = default;
 
+  std::pair<uint32_t, uint16_t> get_id();
+
   void record() override;
+
+  uint8_t get_handle();
 
 private:
   uint32_t channel_id_;
